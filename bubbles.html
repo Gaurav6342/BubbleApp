@@ -1,0 +1,121 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bubble App</title>
+  <style>
+    canvas {
+      border: 1px solid #000;
+      
+    }
+  </style>
+</head>
+<body>
+  <h1 style="text-align: center;">Bubbles App</h1>
+  <canvas id="myCanvas" width="500" height="300"></canvas>
+  <br>
+  <button onclick="startMoving()">Hit</button>
+  <button onclick="reset()">Reset</button>
+
+  <script>
+    var canvas = document.getElementById("myCanvas");
+    var ctx = canvas.getContext("2d");
+
+    var circleX = 70;
+    var circleY = canvas.height / 2;
+    var circleRadius = 50;
+    var circleColor = getRandomColor();
+    var initialCircleColor = circleColor;
+
+    var arrowX = canvas.width - 50;
+    var arrowY = canvas.height / 2;
+    var arrowWidth = 40;
+    var arrowHeight = 30;
+    var arrowSpeed = 1;
+    var arrowHit = false;
+
+    function drawCircle() {
+      ctx.beginPath();
+      ctx.arc(circleX, circleY, circleRadius, 0, 2 * Math.PI);
+      ctx.fillStyle = circleColor;
+      ctx.fill();
+      ctx.closePath();
+    }
+
+    function drawArrow() {
+      
+      ctx.beginPath();
+      ctx.moveTo(arrowX, arrowY);  ///
+      ctx.lineTo(arrowX + arrowWidth / 2, arrowY + arrowHeight / 2);
+      ctx.lineTo(arrowX + arrowWidth / 2, arrowY + arrowHeight / 4);
+      ctx.lineTo(arrowX + arrowWidth, arrowY + arrowHeight / 4);
+      ctx.lineTo(arrowX + arrowWidth, arrowY - arrowHeight / 4);
+      ctx.lineTo(arrowX + arrowWidth / 2, arrowY - arrowHeight / 4);
+      ctx.lineTo(arrowX + arrowWidth / 2, arrowY - arrowHeight / 2);
+      ctx.closePath();
+      ctx.fillStyle = "#000";
+      ctx.fill();
+    }
+
+    function clearCanvas() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function update() {
+      clearCanvas();
+      drawCircle();
+
+      if (!arrowHit) {
+        drawArrow();
+
+        if (arrowX > circleX - circleRadius) {
+          arrowX -= arrowSpeed;
+
+          if (arrowX <= circleX + circleRadius) {
+            arrowHit = true;
+            circleColor = getRandomColor();
+            drawCircle(); // Update circle color after arrow hit
+          }
+        }
+      }
+    }
+
+    function startMoving() {
+      if (!arrowHit) {
+        var interval = setInterval(function() {
+          update();
+
+          if (arrowHit) {
+            clearInterval(interval);
+          }
+        }, 10);
+      }
+    }
+
+    function reset() {
+      circleX = 50;
+      arrowX = canvas.width - 50;
+      circleColor = initialCircleColor;
+      arrowHit = false;
+      clearCanvas();
+      drawCircle();
+      drawArrow();
+    }
+
+    function getRandomColor() {
+      var letters = "0123456789ABCDEF";
+      var color = "#";
+      for (var i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+      }
+      return color;
+    }
+
+    drawCircle();
+    drawArrow();
+  </script>
+</body>
+</html>
+ 
+
